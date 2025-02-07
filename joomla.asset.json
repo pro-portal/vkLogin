@@ -1,0 +1,15 @@
+{
+  "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+  "name": "plg_user_vklogin",
+  "version": "1.0.0",
+  "description": "Плагин социальной авторизации CMS Joomla",
+  "license": "GPL-3.0-or-later",
+  "assets": [
+    {
+      "name": "plg_user_vklogin.css",
+      "description": "Стили плагина лайков",
+      "type": "style",
+      "uri": "media/plg_user_vklogin/css/vklogin.css"
+    }
+  ]
+}

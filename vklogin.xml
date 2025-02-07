@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="user" method="upgrade">
+    <name>plg_user_vklogin</name>
+    <author>Alexand Novikov</author>
+    <creationDate>2025-01-31</creationDate>
+    <copyright>(C) 2025 Alexandr Novikov</copyright>
+    <license>GNU General Public License version 2 or later</license>
+    <authorEmail>support@joomlab.ru</authorEmail>
+    <authorUrl>https://joomlab.ru</authorUrl>
+    <version>1.0.0</version>
+    <description><![CDATA[Плагин авторизации через VK ID]]></description>
+    <namespace path="src">joomLab\Plugin\User\Vklogin</namespace>
+    <scriptfile>script.php</scriptfile>
+    <files>
+        <folder plugin="vklogin">services</folder>
+        <folder>src</folder>
+        <folder>sql</folder>
+    </files>
+    <media folder="media" destination="plg_user_vklogin">
+        <folder>css</folder>
+        <folder>image</folder>
+        <file>joomla.asset.json</file>
+    </media>
+    <languages folder="language">
+        <language tag="en-GB">en-GB/plg_user_vklogin.ini</language>
+        <language tag="en-GB">en-GB/plg_user_vklogin.sys.ini</language>
+        <language tag="ru-RU">ru-RU/plg_user_vklogin.ini</language>
+        <language tag="ru-RU">ru-RU/plg_user_vklogin.sys.ini</language>
+    </languages>
+    <install>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.sql</file>
+        </sql>
+    </install>
+    <uninstall>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/uninstall.sql</file>
+        </sql>
+    </uninstall>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="plugininfo"
+                       type="plugininfo"
+                       addfieldprefix="joomLab\Plugin\User\Vklogin\Fields"
+                />
+               <!-- <field name="merge" type="radio" class="btn-group" default="0"
+                       label="PLG_USER_SOCLOGIN_MERGE"
+                       description="PLG_USER_SOCLOGIN_MERGE"
+                       layout="joomla.form.field.radio.switcher"
+                >
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>-->
+                <field name="type_btn" type="radio" class="btn-group" default="button"
+                       label="PLG_USER_SOCLOGIN_TYPE_BTN"
+                       description="PLG_USER_SOCLOGIN_TYPE_BTN_DESC"
+
+                >
+                    <option value="button">PLG_USER_SOCLOGIN_TYPE_BUTTON</option>
+                <!-- <option value="vidget">PLG_USER_SOCLOGIN_TYPE_VIDGET</option>-->
+             </field>
+            </fieldset>
+            <fieldset name="param_vk">
+                <field
+                        name="app_name"
+                        type="text"
+                        label="PLG_USER_SOCLOGIN_APP_VK_NAME"
+                        showon="check_vk:1"
+                />
+                <field
+                        name="app_id"
+                        type="text"
+                        label="PLG_USER_SOCLOGIN_APP_VK_ID"
+                        filter = "integer"
+                        showon="check_vk:1"
+
+                />
+                <!--<field
+                        name="secret_key"
+                        type="text"
+                        label="PLG_USER_SOCLOGIN_SECRET_KEY"
+                        filter = "integer"
+                />-->
+                <field
+                        name="redirectUrl"
+                        type="link"
+                        label="PLG_USER_SOCLOGIN_APP_VK_URL"
+                        showon="check_vk:1"
+                        readonly="true"
+                />
+            </fieldset>
+            <fieldset name="reg_form">
+               <!-- <field name="check_reg_form" type="radio" class="btn-group" default="0"
+                       label="PLG_USER_SOCLOGIN_CHECK_REGFORM"
+                       description="PLG_USER_SOCLOGIN_CHECK_REGFORM_DESC"
+                       layout="joomla.form.field.radio.switcher"
+                >
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>-->
+                <field name="delete_username" type="radio" class="btn-group" default="0"
+                       label="PLG_USER_SOCLOGIN_DELETE_USERNAME"
+                       description="PLG_USER_SOCLOGIN_DELETE_USERNAME_DESC"
+                       layout="joomla.form.field.radio.switcher"
+                >
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field name="delete_password1" type="radio" class="btn-group" default="0"
+                       label="PLG_USER_SOCLOGIN_DELETE_PASSWORD1"
+                       description="PLG_USER_SOCLOGIN_DELETE_PASSWORD1_DESC"
+                       layout="joomla.form.field.radio.switcher"
+                >
+                    <option value="0" >JNO</option>
+                    <option value="1" onclick="document.getElementById('jform_params_delete_password21').click();">JYES</option>
+                </field>
+                <field name="delete_password2" type="radio" class="btn-group" default="0"
+                       label="PLG_USER_SOCLOGIN_DELETE_PASSWORD2"
+                       description="PLG_USER_SOCLOGIN_DELETE_PASSWORD2_DESC"
+                       layout="joomla.form.field.radio.switcher"
+                >
+                    <option value="0">JNO</option>
+                    <option value="1" onclick="if(document.getElementById('jform_params_delete_password11').checked) return false;">JYES</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
+    <layouts destination="plugins/user" folder="layouts">
+        <folder>vklogin</folder>
+    </layouts>
+    <updateservers>
+        <server type="extension" priority="1" name="joomlab VkLogin updates">https://joomlab.ru/update?element=plg_user_vklogin</server>
+    </updateservers>
+    <changelogurl>https://joomlab.ru/changelog?element=plg_user_vklogin</changelogurl>
+
+</extension>

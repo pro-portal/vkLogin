@@ -1,0 +1,26 @@
+.social_btn {
+    margin-bottom:15px;
+}
+.preloader_login {
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    width:100%;
+    z-index:99999;
+    background:#fff;
+    opacity:0.3;
+    display:none;
+}
+.joomlab_vk_image {
+    display:inline-block;
+    vertical-align:bottom;
+    width:25px;
+    height:25px;
+    background:url('/media/plg_user_vklogin/image/vk.png')no-repeat center center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
