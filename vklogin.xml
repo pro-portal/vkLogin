@@ -44,14 +44,6 @@
                        type="plugininfo"
                        addfieldprefix="joomLab\Plugin\User\Vklogin\Fields"
                 />
-               <!-- <field name="merge" type="radio" class="btn-group" default="0"
-                       label="PLG_USER_SOCLOGIN_MERGE"
-                       description="PLG_USER_SOCLOGIN_MERGE"
-                       layout="joomla.form.field.radio.switcher"
-                >
-                    <option value="0">JNO</option>
-                    <option value="1">JYES</option>
-                </field>-->
                 <field name="type_btn" type="radio" class="btn-group" default="button"
                        label="PLG_USER_SOCLOGIN_TYPE_BTN"
                        description="PLG_USER_SOCLOGIN_TYPE_BTN_DESC"
@@ -73,32 +65,15 @@
                         type="text"
                         label="PLG_USER_SOCLOGIN_APP_VK_ID"
                         filter = "integer"
-                        showon="check_vk:1"
-
                 />
-                <!--<field
-                        name="secret_key"
-                        type="text"
-                        label="PLG_USER_SOCLOGIN_SECRET_KEY"
-                        filter = "integer"
-                />-->
                 <field
                         name="redirectUrl"
                         type="link"
                         label="PLG_USER_SOCLOGIN_APP_VK_URL"
-                        showon="check_vk:1"
                         readonly="true"
                 />
             </fieldset>
             <fieldset name="reg_form">
-               <!-- <field name="check_reg_form" type="radio" class="btn-group" default="0"
-                       label="PLG_USER_SOCLOGIN_CHECK_REGFORM"
-                       description="PLG_USER_SOCLOGIN_CHECK_REGFORM_DESC"
-                       layout="joomla.form.field.radio.switcher"
-                >
-                    <option value="0">JNO</option>
-                    <option value="1">JYES</option>
-                </field>-->
                 <field name="delete_username" type="radio" class="btn-group" default="0"
                        label="PLG_USER_SOCLOGIN_DELETE_USERNAME"
                        description="PLG_USER_SOCLOGIN_DELETE_USERNAME_DESC"
