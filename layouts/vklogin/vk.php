@@ -78,10 +78,15 @@ $wa->useStyle('plg_user_vklogin.css');
                    onSuccess: function (response) {
                        //console.log(response);
                        if (response) {
+                           const currentUrl = new URL(window.location.href);
+                           currentUrl.search = '';
+                           window.history.replaceState({}, document.title, currentUrl.toString());
+
                            const user = JSON.parse(response);
-                           if (user.isNew == true) {
-                               window.location.href = user.registeredUrl
-                           } else {
+                           if (user.isNew === true) {
+                               window.location.href = user.registeredUrl;
+                           }
+                           if (user.isNew === false) {
                                if (user.message) {
                                    Joomla.renderMessages({
                                        info: [user.message]
@@ -89,6 +94,12 @@ $wa->useStyle('plg_user_vklogin.css');
                                } else {
                                    location.reload();
                                }
+
+                           }
+                           if (user.isNew === 'error') {
+                               Joomla.renderMessages({
+                                   error: [user.message_error]
+                               });
                            }
                        }
                    },

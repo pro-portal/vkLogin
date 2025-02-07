@@ -13,9 +13,6 @@ use Joomla\CMS\Http\HttpFactory;
 
 $http = HttpFactory::getHttp();
 
-$code = $app->getInput()->json->getArray()['code'];
-$device_id =  $app->getInput()->json->getArray()['device_id'];
-$state =  $app->getInput()->json->getArray()['state'];
 $code_verifier = Factory::getSession()->get('code_verifier');
 $code = $app->getInput()->json->getArray()['code'];
 $device_id =  $app->getInput()->json->getArray()['device_id'];

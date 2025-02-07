@@ -110,16 +110,16 @@ class Vklogin extends CMSPlugin
 
         include __DIR__ . '/ResponseVK.php';
 
-        if(empty($social_id)) return;
-        //записываем в сессию
-        $session_user_id = Factory::getSession()->set('social_id', $social_id);
-        $session_avatar = Factory::getSession()->set('avatar', $avatar);
-        $session_social_name = Factory::getSession()->set('social_name', $social_name);
+        if(!empty($social_id)) {
+            //записываем в сессию
+            $session_user_id = Factory::getSession()->set('social_id', $social_id);
+            $session_avatar = Factory::getSession()->set('avatar', $avatar);
+            $session_social_name = Factory::getSession()->set('social_name', $social_name);
 
-        //проверяем пользователя
-        $db->setQuery("SELECT `user_id` FROM `#__joomlab_soc_login` WHERE `social_id` = '{$social_id}' AND `social_name` = '{$social_name}'");
-        $user_id = $db->loadResult();
-        if(!$user_id) { //если пользователя нет - регистрируем
+            //проверяем пользователя
+            $db->setQuery("SELECT `user_id` FROM `#__joomlab_soc_login` WHERE `social_id` = '{$social_id}' AND `social_name` = '{$social_name}'");
+            $user_id = $db->loadResult();
+            if (!$user_id) { //если пользователя нет - регистрируем
                 $url = Route::link(
                     'site',
                     'index.php?option=com_users&view=registration' .
@@ -134,53 +134,64 @@ class Vklogin extends CMSPlugin
                     'registeredUrl' => html_entity_decode($url),
                 ];
 
-            $event->addResult(json_encode($registeredData, JSON_UNESCAPED_UNICODE));
-        } else { //если пользователь есть - проверяем и авторизируем
-            //меняем аватар
-            $http = HttpFactory::getHttp();
-            $avatarUrl = preg_replace('/&cs=\d+x\d+/', '&cs=640x640', $avatar);
-            $savePath = JPATH_ROOT . '/images/avatar/'.$social_name.'_'.$social_id.'.jpg';
-            $response_ava = $http->get($avatarUrl);
-            if ($response_ava->code === 200) {
-                $dir = dirname($savePath);
-                if (!Folder::exists($dir)) {
-                    Folder::create($dir);
+                $event->addResult(json_encode($registeredData, JSON_UNESCAPED_UNICODE));
+            } else { //если пользователь есть - проверяем и авторизируем
+                //меняем аватар
+                $http = HttpFactory::getHttp();
+                $avatarUrl = preg_replace('/&cs=\d+x\d+/', '&cs=640x640', $avatar);
+                $savePath = JPATH_ROOT . '/images/avatar/' . $social_name . '_' . $social_id . '.jpg';
+                $response_ava = $http->get($avatarUrl);
+                if ($response_ava->code === 200) {
+                    $dir = dirname($savePath);
+                    if (!Folder::exists($dir)) {
+                        Folder::create($dir);
+                    }
+                    File::write($savePath, $response_ava->body);
                 }
-                File::write($savePath, $response_ava->body);
+                $user = Factory::getUser($user_id);
+                if ($user->block) {
+                    $message = Text::_('COM_USERS_PROFILE_USER_BLOCKED');
+                    $registeredData = [
+                        'isNew' => false,
+                        'message' => $message
+                    ];
+                    $event->addResult(json_encode($registeredData, JSON_UNESCAPED_UNICODE));
+                } else {
+                    $registeredData = [
+                        'isNew' => false,
+                        'loginUrl' => ''
+                    ];
+
+                    $statusSuccess = Authentication::STATUS_SUCCESS;
+                    $response = $this->getAuthenticationResponseObject();
+                    $response->status = $statusSuccess;
+                    $response->username = $user->username;
+                    $response->fullname = $user->name;
+                    $response->error_message = '';
+                    $response->language = $user->getParam('language');
+
+                    $options = [
+                        'remember' => true,
+                        'action' => 'core.login.site',
+                    ];
+
+                    $dispatcher = $app->getDispatcher();
+                    PluginHelper::importPlugin('user');
+                    $event_login = new Event('onUserLogin', [(array)$response, $options]);
+                    $results = $dispatcher->dispatch('onUserLogin', $event_login);
+
+                    $event->addResult(json_encode($registeredData, JSON_UNESCAPED_UNICODE));
+                }
             }
-            $user = Factory::getUser($user_id);
-            if ($user->block) {
-                $message = Text::_('COM_USERS_PROFILE_USER_BLOCKED');
+        } else { //если запрос с ошибкой и не получен social_id
+            if($app->getIdentity()->id == 0) {
+                $message = Text::_('COM_USERS_PROFILE_USER_NO_RESPONSE');
                 $registeredData = [
-                    'isNew' => false,
-                    'message' => $message
-                ];
-                $event->addResult(json_encode($registeredData, JSON_UNESCAPED_UNICODE));
-            } else {
-                $registeredData = [
-                    'isNew' => false,
-                    'loginUrl' => ''
+                    'isNew' => 'error',
+                    'message_error' => $message
                 ];
 
-                $statusSuccess           = Authentication::STATUS_SUCCESS;
-                $response                = $this->getAuthenticationResponseObject();
-                $response->status        = $statusSuccess;
-                $response->username      = $user->username;
-                $response->fullname      = $user->name;
-                $response->error_message = '';
-                $response->language      = $user->getParam('language');
-
-                $options = [
-                    'remember' => true,
-                    'action'   => 'core.login.site',
-                ];
-
-                $dispatcher = $app->getDispatcher();
-                PluginHelper::importPlugin('user');
-                $event_login = new Event('onUserLogin', [(array) $response, $options]);
-                $results = $dispatcher->dispatch('onUserLogin', $event_login);
-
-                $event->addResult(json_encode($registeredData, JSON_UNESCAPED_UNICODE));
+            $event->addResult(json_encode($registeredData, JSON_UNESCAPED_UNICODE));
             }
         }
     }
@@ -310,7 +321,6 @@ class Vklogin extends CMSPlugin
                 $results = $dispatcher->dispatch('onUserLogin', $event_login);
 
                 $app->redirect(URI::root()); // Редирект на главную страницу
-
             }
 
         }
