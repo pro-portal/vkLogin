@@ -68,9 +68,9 @@ class Vklogin extends CMSPlugin
         if(!empty($event->getArguments()['result'])) {
             $all_btn = $event->getArguments()['result'];
         }
-        [$form] = array_values($event->getArguments());
+        [$form] = $event->getArguments();
         if($this->getApplication()->isClient('site')) {
-            if ($this->params->get('type_btn') == 'button' and $this->params->get('check_vk') == 1) {
+            if ($this->params->get('type_btn') == 'button') {
                 $vk_btn[] = [
                     'label' => 'PLG_USER_VK_LOGIN_LABEL',
                     'tooltip' => 'PLG_USER_VK_LOGIN_DESC',
